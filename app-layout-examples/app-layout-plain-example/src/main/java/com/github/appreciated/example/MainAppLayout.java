@@ -1,5 +1,10 @@
 package com.github.appreciated.example;
 
+import static com.github.appreciated.app.layout.entity.Section.FOOTER;
+import static com.github.appreciated.app.layout.entity.Section.HEADER;
+
+import java.util.function.Consumer;
+
 import com.github.appreciated.app.layout.behaviour.Behaviour;
 import com.github.appreciated.app.layout.builder.AppLayoutBuilder;
 import com.github.appreciated.app.layout.component.appbar.AppBarBuilder;
@@ -15,8 +20,6 @@ import com.github.appreciated.app.layout.design.AppLayoutDesign;
 import com.github.appreciated.app.layout.entity.DefaultBadgeHolder;
 import com.github.appreciated.app.layout.notification.DefaultNotificationHolder;
 import com.github.appreciated.app.layout.notification.component.AppBarNotificationButton;
-import com.github.appreciated.app.layout.notification.entitiy.DefaultNotification;
-import com.github.appreciated.app.layout.notification.entitiy.Priority;
 import com.github.appreciated.app.layout.router.AppLayoutRouterLayout;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -24,12 +27,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-
-import java.util.function.Consumer;
-
-import static com.github.appreciated.app.layout.entity.Section.FOOTER;
-import static com.github.appreciated.app.layout.entity.Section.HEADER;
-import static com.github.appreciated.app.layout.notification.entitiy.Priority.MEDIUM;
 
 /**
  * The main view contains a button and a template element.
@@ -42,6 +39,7 @@ public class MainAppLayout extends AppLayoutRouterLayout {
   private DefaultNotificationHolder notifications;
   private DefaultBadgeHolder        badge;
 //  private Thread currentThread;
+  public static LeftNavigationComponent homeElement;
 
   @Override public com.github.appreciated.app.layout.behaviour.AppLayout getAppLayout() {
     if (variant == null) {
@@ -52,6 +50,7 @@ public class MainAppLayout extends AppLayoutRouterLayout {
     }
 
     if (!variant.isTop()) {
+      homeElement = new LeftNavigationComponent("Home", VaadinIcon.HOME.create(), View1.class);
       return AppLayoutBuilder
           .get(variant)
           .withTitle("App Layout")
@@ -70,7 +69,7 @@ public class MainAppLayout extends AppLayoutRouterLayout {
                                                                     VaadinIcon.COG.create(),
                                                                     clickEvent -> openModeSelector(variant)
                            ), HEADER)
-                           .add(new LeftNavigationComponent("Home", VaadinIcon.HOME.create(), View1.class))
+              .add(homeElement)
                            .add(new LeftNavigationComponent("Grid", VaadinIcon.TABLE.create(), GridTest.class))
                            .add(LeftSubMenuBuilder
                                     .get("My Submenu", VaadinIcon.PLUS.create())
@@ -132,6 +131,9 @@ public class MainAppLayout extends AppLayoutRouterLayout {
     }
   }
 
+  public LeftNavigationComponent getHomeElement() {
+    return homeElement;
+  }
 
   private void setDrawerVariant(Behaviour variant) {
     this.variant = variant;
